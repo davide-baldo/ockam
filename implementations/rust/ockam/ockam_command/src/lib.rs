@@ -1,6 +1,8 @@
 //! Orchestrate end-to-end encryption, mutual authentication, key management,
 //! credential management, and authorization policy enforcement — at scale.
 
+extern crate core;
+
 mod admin;
 mod authenticated;
 mod completion;
@@ -13,6 +15,7 @@ mod help;
 mod identity;
 mod message;
 mod node;
+mod plugin;
 mod policy;
 mod project;
 mod reset;
@@ -26,6 +29,7 @@ mod upgrade;
 mod util;
 mod vault;
 mod version;
+pub use plugin::PluginAPI;
 
 use anyhow::Context;
 use authenticated::AuthenticatedCommand;
@@ -55,6 +59,7 @@ use version::Version;
 
 use crate::admin::AdminCommand;
 use crate::node::util::run::CommandSection;
+use crate::plugin::PluginCommand;
 use crate::subscription::SubscriptionCommand;
 use clap::{ArgAction, Args, Parser, Subcommand, ValueEnum};
 use upgrade::check_if_an_upgrade_is_available;
@@ -306,6 +311,7 @@ pub enum OckamSubcommand {
     Vault(VaultCommand),
     Subscription(SubscriptionCommand),
     Admin(AdminCommand),
+    Plugin(PluginCommand),
 }
 
 pub fn run() {
@@ -373,6 +379,7 @@ impl OckamCommand {
             OckamSubcommand::Subscription(c) => c.run(options),
             OckamSubcommand::Reset(c) => c.run(options),
             OckamSubcommand::Admin(c) => c.run(options),
+            OckamSubcommand::Plugin(c) => c.run(options),
         }
     }
 }

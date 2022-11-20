@@ -21,6 +21,7 @@ members = [
     "implementations/rust/ockam/ockam_macros",
     "implementations/rust/ockam/ockam_multiaddr",
     "implementations/rust/ockam/ockam_node",
+    "implementations/rust/ockam/ockam_pong",
     "implementations/rust/ockam/ockam_transport_ble",
     "implementations/rust/ockam/ockam_transport_core",
     "implementations/rust/ockam/ockam_transport_tcp",
