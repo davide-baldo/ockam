@@ -1,13 +1,14 @@
-use clap::{arg, ArgMatches, Command, CommandFactory, FromArgMatches as _, Parser};
-use ockam_command::{CommandGlobalOpts, PluginAPI};
-use std::sync::Arc;
+mod api;
+mod command;
+mod service;
 
-#[derive(Parser, Debug)]
-#[command(name = "pong", about = "Ping/pong sample service plugin")]
-struct PongCommand {
-    #[arg(short, long)]
-    parameter: String,
-}
+use clap::{ArgMatches, Command, CommandFactory, FromArgMatches as _};
+use command::PongCommand;
+use ockam::Context;
+use ockam_core::{Encoded, Worker};
+use ockam_plugin::PluginAPI;
+use service::PongService;
+use std::sync::Arc;
 
 #[derive(Debug)]
 struct PongPlugin {}
@@ -21,14 +22,13 @@ impl PluginAPI for PongPlugin {
         PongCommand::command()
     }
 
-    fn run(&self, matches: &ArgMatches, options: CommandGlobalOpts) {
-        let pong = PongCommand::from_arg_matches(matches).expect("cannot map to derive");
+    fn create_worker(&self) -> Box<dyn Worker<Context = Context, Message = Encoded>> {
+        Box::new(PongService {})
+    }
 
-        println!("PongPlugin called with parameter: {}", &pong.parameter);
-        println!(
-            "PongPlugin: matches {:?}, global_args: {:?}",
-            matches, options.global_args
-        );
+    fn run(&self, matches: &ArgMatches) {
+        let pong = PongCommand::from_arg_matches(matches).expect("cannot map to derive");
+        pong.run();
     }
 }
 

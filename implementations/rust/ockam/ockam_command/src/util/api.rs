@@ -10,7 +10,8 @@ use clap::Args;
 use minicbor::Decoder;
 use ockam_api::nodes::models::services::{
     StartAuthenticatedServiceRequest, StartAuthenticatorRequest, StartCredentialsService,
-    StartIdentityServiceRequest, StartVaultServiceRequest, StartVerifierService,
+    StartIdentityServiceRequest, StartPluginServiceRequest, StartVaultServiceRequest,
+    StartVerifierService,
 };
 use tracing::trace;
 
@@ -131,6 +132,15 @@ pub(crate) fn list_secure_channel_listener() -> RequestBuilder<'static, ()> {
 pub(crate) fn start_vault_service(addr: &str) -> RequestBuilder<'static, StartVaultServiceRequest> {
     let payload = StartVaultServiceRequest::new(addr);
     Request::post("/node/services/vault").body(payload)
+}
+
+/// Construct a request to start a Vault Service
+pub(crate) fn start_plugin_service<'a>(
+    plugin: &'a str,
+    addr: &'a str,
+) -> RequestBuilder<'static, StartPluginServiceRequest> {
+    let payload = StartPluginServiceRequest::new(plugin, addr);
+    Request::post("/node/services/plugin").body(payload)
 }
 
 /// Construct a request to start an Identity Service

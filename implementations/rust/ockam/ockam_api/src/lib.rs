@@ -24,6 +24,7 @@ extern crate tracing;
 pub struct DefaultAddress;
 
 impl DefaultAddress {
+    pub const PLUGIN_SERVICE: &'static str = "plugin_service";
     pub const VAULT_SERVICE: &'static str = "vault_service";
     pub const IDENTITY_SERVICE: &'static str = "identity_service";
     pub const AUTHENTICATED_SERVICE: &'static str = "authenticated";

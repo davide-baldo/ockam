@@ -78,6 +78,9 @@ pub(crate) struct SecureChannelListenerInfo {}
 pub(crate) struct VaultServiceInfo {}
 
 #[derive(Default)]
+pub(crate) struct PluginServiceInfo {}
+
+#[derive(Default)]
 pub(crate) struct IdentityServiceInfo {}
 
 #[derive(Default)]
@@ -147,6 +150,7 @@ impl OutletInfo {
 pub(crate) struct Registry {
     pub(crate) secure_channels: SecureChannelRegistry,
     pub(crate) secure_channel_listeners: BTreeMap<Address, SecureChannelListenerInfo>,
+    pub(crate) plugin_services: BTreeMap<Address, PluginServiceInfo>,
     pub(crate) vault_services: BTreeMap<Address, VaultServiceInfo>,
     pub(crate) identity_services: BTreeMap<Address, IdentityServiceInfo>,
     pub(crate) authenticated_services: BTreeMap<Address, AuthenticatedServiceInfo>,

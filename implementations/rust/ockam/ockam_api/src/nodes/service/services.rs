@@ -5,20 +5,41 @@ use crate::identity::IdentityService;
 use crate::nodes::models::services::{
     ServiceList, ServiceStatus, StartAuthenticatedServiceRequest, StartAuthenticatorRequest,
     StartCredentialsService, StartEchoerServiceRequest, StartIdentityServiceRequest,
-    StartOktaIdentityProviderRequest, StartUppercaseServiceRequest, StartVaultServiceRequest,
-    StartVerifierService,
+    StartOktaIdentityProviderRequest, StartPluginServiceRequest, StartUppercaseServiceRequest,
+    StartVaultServiceRequest, StartVerifierService,
 };
 use crate::nodes::registry::{CredentialsServiceInfo, Registry, VerifierServiceInfo};
+use crate::nodes::service::plugin::PluginServiceAdapter;
 use crate::nodes::NodeManager;
 use crate::uppercase::Uppercase;
 use crate::vault::VaultService;
 use minicbor::Decoder;
 use ockam::{Address, AsyncTryClone, Context, Result};
 use ockam_core::api::{Request, Response, ResponseBuilder};
+use ockam_plugin::loader::find_plugin;
 
 use super::NodeManagerWorker;
 
 impl NodeManager {
+    pub(super) async fn start_plugin_service_impl(
+        &mut self,
+        worker: PluginServiceAdapter,
+        ctx: &Context,
+        addr: Address,
+    ) -> Result<()> {
+        if self.registry.plugin_services.contains_key(&addr) {
+            return Err(ApiError::generic("Plugin service exists at this address"));
+        }
+
+        ctx.start_worker(addr.clone(), worker).await?;
+
+        self.registry
+            .plugin_services
+            .insert(addr, Default::default());
+
+        Ok(())
+    }
+
     pub(super) async fn start_vault_service_impl(
         &mut self,
         ctx: &Context,
@@ -203,6 +224,32 @@ impl NodeManager {
 }
 
 impl NodeManagerWorker {
+    pub(super) async fn start_plugin_service(
+        &mut self,
+        ctx: &Context,
+        req: &Request<'_>,
+        dec: &mut Decoder<'_>,
+    ) -> Result<ResponseBuilder> {
+        let req_body: StartPluginServiceRequest = dec.decode()?;
+
+        if let Some(plugin) = find_plugin(req_body.plugin.as_ref()) {
+            let mut node_manager = self.node_manager.write().await;
+            let addr = req_body.addr.to_string().into();
+            node_manager
+                .start_plugin_service_impl(
+                    PluginServiceAdapter {
+                        worker: plugin.create_worker(),
+                    },
+                    ctx,
+                    addr,
+                )
+                .await?;
+            Ok(Response::ok(req.id()))
+        } else {
+            todo!("return plugin not found response")
+        }
+    }
+
     pub(super) async fn start_vault_service(
         &mut self,
         ctx: &Context,
@@ -370,6 +417,10 @@ impl NodeManagerWorker {
         registry: &'a Registry,
     ) -> ResponseBuilder<ServiceList<'a>> {
         let mut list = Vec::new();
+        registry
+            .plugin_services
+            .keys()
+            .for_each(|addr| list.push(ServiceStatus::new(addr.address(), "plugin")));
         registry
             .vault_services
             .keys()

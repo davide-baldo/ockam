@@ -1,17 +1,17 @@
-use crate::plugin::loader::load_plugins;
 use crate::plugin::PluginCommand;
 use crate::CommandGlobalOpts;
 use clap::error::ErrorKind;
 use clap::{ArgMatches, Command, Error, FromArgMatches};
+use ockam_plugin::loader::load_plugins;
 
 /*
     This is the implementation of the plugin command,
     this command is created dynamically based on plugin presents.
 */
 impl PluginCommand {
-    pub fn run(self, options: CommandGlobalOpts) {
+    pub fn run(self, _options: CommandGlobalOpts) {
         if let Some(plugin) = self.plugin {
-            plugin.run(&self.matches, options);
+            plugin.run(&self.matches);
         } else {
             //display help when no subcommand is provided
             create_plugin_command().print_help().unwrap();

@@ -283,3 +283,24 @@ impl<'a> ServiceList<'a> {
         }
     }
 }
+
+#[derive(Debug, Clone, Decode, Encode)]
+#[rustfmt::skip]
+#[cbor(map)]
+pub struct StartPluginServiceRequest<'a> {
+    #[cfg(feature = "tag")]
+    #[n(0)] tag: TypeTag<4636656>,
+    #[b(1)] pub plugin: CowStr<'a>,
+    #[b(2)] pub addr: CowStr<'a>,
+}
+
+impl<'a> StartPluginServiceRequest<'a> {
+    pub fn new(plugin: impl Into<CowStr<'a>>, addr: impl Into<CowStr<'a>>) -> Self {
+        Self {
+            #[cfg(feature = "tag")]
+            tag: TypeTag,
+            plugin: plugin.into(),
+            addr: addr.into(),
+        }
+    }
+}

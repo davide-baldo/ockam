@@ -43,6 +43,7 @@ pub mod message;
 mod credentials;
 mod forwarder;
 mod identity;
+mod plugin;
 mod policy;
 mod portals;
 mod secure_channel;
@@ -111,6 +112,7 @@ pub struct NodeManager {
     vault: Option<Vault>,
     identity: Option<Identity<Vault>>,
     project_id: Option<String>,
+    // plugins: Arc<BTreeMap<String, PluginServiceAdapter>>,
     projects: Arc<BTreeMap<String, ProjectLookup>>,
     authorities: Option<Authorities>,
     pub(crate) authenticated_storage: LmdbStorage,
@@ -603,8 +605,18 @@ impl NodeManagerWorker {
                 .create_secure_channel_listener(req, dec)
                 .await?
                 .to_vec()?,
+            //
+            // // ==*== Plugin ==*==
+            // ///////////////////////////////
+            // (Post, ["node", "plugin", name]) => self
+            //     .send_to_plugin_service(ctx, req, dec, name)
+            //     .await?
+            //     .to_vec()?,
 
             // ==*== Services ==*==
+            (Post, ["node", "services", "plugin"]) => {
+                self.start_plugin_service(ctx, req, dec).await?.to_vec()?
+            }
             (Post, ["node", "services", "vault"]) => {
                 self.start_vault_service(ctx, req, dec).await?.to_vec()?
             }

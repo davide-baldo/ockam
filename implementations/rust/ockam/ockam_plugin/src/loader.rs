@@ -10,7 +10,7 @@ static LOAD_PLUGINS: Once = Once::new();
     Loads & returns all plugins within plugins/ directory.
     Thread-safe
 */
-pub(crate) fn load_plugins() -> &'static Mutex<Vec<Arc<dyn PluginAPI>>> {
+pub fn load_plugins() -> &'static Mutex<Vec<Arc<dyn PluginAPI>>> {
     LOAD_PLUGINS.call_once(|| {
         let plugin_api;
         unsafe {
@@ -29,4 +29,13 @@ pub(crate) fn load_plugins() -> &'static Mutex<Vec<Arc<dyn PluginAPI>>> {
     });
 
     &PLUGINS
+}
+
+pub fn find_plugin(name: &str) -> Option<Arc<dyn PluginAPI>> {
+    load_plugins()
+        .lock()
+        .unwrap()
+        .iter()
+        .find(|plugin| plugin.name() == name)
+        .map(|arc| arc.clone())
 }

@@ -25,7 +25,8 @@ use ockam_multiaddr::{
     MultiAddr, Protocol,
 };
 
-use crate::node::util::start_embedded_node;
+pub use crate::node::util::delete_embedded_node;
+pub use crate::node::util::start_embedded_node;
 use crate::util::output::Output;
 use crate::{CommandGlobalOpts, OutputFormat};
 

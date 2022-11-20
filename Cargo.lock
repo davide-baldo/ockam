@@ -2350,6 +2350,7 @@ dependencies = [
  "ockam_macros",
  "ockam_multiaddr",
  "ockam_node",
+ "ockam_plugin",
  "ockam_transport_tcp",
  "ockam_vault",
  "quickcheck",
@@ -2401,7 +2402,6 @@ dependencies = [
  "dirs",
  "hex",
  "itertools",
- "libloading",
  "minicbor",
  "nix",
  "ockam",
@@ -2410,6 +2410,7 @@ dependencies = [
  "ockam_core",
  "ockam_identity",
  "ockam_multiaddr",
+ "ockam_plugin",
  "ockam_vault",
  "open",
  "pem-rfc7468",
@@ -2598,10 +2599,22 @@ dependencies = [
 ]
 
 [[package]]
-name = "ockam_pong"
+name = "ockam_plugin"
 version = "0.1.0"
 dependencies = [
  "clap 4.0.14",
+ "libloading",
+ "ockam",
+ "ockam_core",
+]
+
+[[package]]
+name = "ockam_pong"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "clap 4.0.14",
+ "minicbor",
  "ockam",
  "ockam_abac",
  "ockam_api",
@@ -2609,7 +2622,11 @@ dependencies = [
  "ockam_core",
  "ockam_identity",
  "ockam_multiaddr",
+ "ockam_plugin",
  "ockam_vault",
+ "serde",
+ "serde_json",
+ "serde_yaml",
 ]
 
 [[package]]
@@ -3609,6 +3626,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "serde_yaml"
+version = "0.9.14"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6d232d893b10de3eb7258ff01974d6ee20663d8e833263c99409d4b13a0209da"
+dependencies = [
+ "indexmap",
+ "itoa 1.0.4",
+ "ryu",
+ "serde",
+ "unsafe-libyaml",
+]
+
+[[package]]
 name = "sha-1"
 version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4350,6 +4380,12 @@ dependencies = [
  "generic-array 0.14.6",
  "subtle",
 ]
+
+[[package]]
+name = "unsafe-libyaml"
+version = "0.2.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c1e5fa573d8ac5f1a856f8d7be41d390ee973daf97c806b2c1a465e4e1406e68"
 
 [[package]]
 name = "unsigned-varint"

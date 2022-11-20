@@ -9,7 +9,7 @@ mod completion;
 mod configuration;
 mod credential;
 mod enroll;
-mod error;
+pub mod error;
 mod forwarder;
 mod help;
 mod identity;
@@ -26,10 +26,9 @@ mod subscription;
 mod tcp;
 mod terminal;
 mod upgrade;
-mod util;
+pub mod util;
 mod vault;
 mod version;
-pub use plugin::PluginAPI;
 
 use anyhow::Context;
 use authenticated::AuthenticatedCommand;
@@ -61,6 +60,7 @@ use crate::admin::AdminCommand;
 use crate::node::util::run::CommandSection;
 use crate::plugin::PluginCommand;
 use crate::subscription::SubscriptionCommand;
+use crate::OutputFormat::Plain;
 use clap::{ArgAction, Args, Parser, Subcommand, ValueEnum};
 use upgrade::check_if_an_upgrade_is_available;
 
@@ -168,7 +168,7 @@ pub struct OckamCommand {
     global_args: GlobalArgs,
 }
 
-#[derive(Debug, Clone, Args)]
+#[derive(Debug, Clone, Args, Default)]
 pub struct GlobalArgs {
     #[arg(
         global = true,
@@ -224,7 +224,13 @@ pub enum OutputFormat {
     Json,
 }
 
-#[derive(Debug, Clone, Args)]
+impl Default for OutputFormat {
+    fn default() -> Self {
+        Plain
+    }
+}
+
+#[derive(Debug, Clone, Args, Default)]
 pub struct ExportCommandArgs {
     /// Export the command input to a file.
     /// Used to run a set of commands after creating a node with `ockam node create --run commands.json`
@@ -259,7 +265,7 @@ pub struct CommandGlobalOpts {
 }
 
 impl CommandGlobalOpts {
-    fn new(global_args: GlobalArgs, config: OckamConfig) -> Self {
+    pub fn new(global_args: GlobalArgs, config: OckamConfig) -> Self {
         Self {
             global_args,
             config,

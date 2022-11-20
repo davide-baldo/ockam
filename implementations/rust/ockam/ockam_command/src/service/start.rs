@@ -22,6 +22,11 @@ pub struct StartCommand {
 
 #[derive(Clone, Debug, Subcommand)]
 pub enum StartSubCommand {
+    Plugin {
+        plugin: String,
+        #[arg(default_value_t = plugin_default_addr())]
+        addr: String,
+    },
     Vault {
         #[arg(default_value_t = vault_default_addr())]
         addr: String,
@@ -55,6 +60,10 @@ pub enum StartSubCommand {
         #[arg(long)]
         project: String,
     },
+}
+
+fn plugin_default_addr() -> String {
+    DefaultAddress::PLUGIN_SERVICE.to_string()
 }
 
 fn vault_default_addr() -> String {
@@ -102,6 +111,9 @@ async fn run_impl(
     let node_name = &cmd.node_opts.api_node;
     let tcp = TcpTransport::create(ctx).await?;
     match cmd.create_subcommand {
+        StartSubCommand::Plugin { plugin, addr, .. } => {
+            start_plugin_service(ctx, &opts, node_name, &plugin, &addr, Some(&tcp)).await?
+        }
         StartSubCommand::Vault { addr, .. } => {
             start_vault_service(ctx, &opts, node_name, &addr, Some(&tcp)).await?
         }
@@ -177,6 +189,28 @@ where
             Err(anyhow!("Failed to start {serv_name} service"))
         }
     }
+}
+
+/// Public so `ockam_command::node::create` can use it.
+pub async fn start_plugin_service(
+    ctx: &Context,
+    opts: &CommandGlobalOpts,
+    node_name: &str,
+    plugin_name: &str,
+    serv_addr: &str,
+    tcp: Option<&'_ TcpTransport>,
+) -> Result<()> {
+    let req = api::start_plugin_service(plugin_name, serv_addr);
+    start_service_impl(
+        ctx,
+        opts,
+        node_name,
+        serv_addr,
+        &format!("Plugin-{}", plugin_name),
+        req,
+        tcp,
+    )
+    .await
 }
 
 /// Public so `ockam_command::node::create` can use it.
