@@ -1,12 +1,10 @@
-use tauri::Manager;
-#[cfg(debug_assertions)]
-use tauri::SystemTraySubmenu;
 use tauri::{AppHandle, CustomMenuItem, SystemTrayMenu, Wry};
 #[cfg(target_os = "macos")]
 use tauri_runtime::menu::NativeImage;
 use tracing::log::error;
+#[cfg(debug_assertions)]
+use {crate::app::events::system_tray_on_update, tauri::Manager, tauri::SystemTraySubmenu};
 
-use crate::app::events::system_tray_on_update;
 use crate::app::AppState;
 use crate::options::reset;
 

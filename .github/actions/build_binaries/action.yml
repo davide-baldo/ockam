@@ -34,7 +34,7 @@ runs:
           cargo install --version 0.1.16 cross
         else
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends xz-utils liblz4-tool musl-tools
+          sudo apt-get install -y --no-install-recommends xz-utils liblz4-tool musl-tools libwebkit2gtk-4.0-dev libgtk-3-dev libayatana-appindicator3-dev
         fi
 
     ## TODO Cache for faster build for different targets
@@ -52,4 +52,9 @@ runs:
           cross build --bin ockam --target ${{ inputs.target }} --verbose --release
         else
           cargo build --bin ockam --target ${{ inputs.target }} --verbose --release
+        fi
+        
+        if [[ "${{ inputs.target }}" =~ .+-apple-(.+)?  ]]; then
+          cd implementations/rust/ockam/ockam_app/
+          cargo tauri build --release
         fi
