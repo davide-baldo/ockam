@@ -4,15 +4,10 @@ permissions:
   contents: read
 
 on:
-  merge_group:
-  pull_request:
-  push:
-    branches:
-      - develop
-  workflow_dispatch:
-    inputs:
-      commit_sha:
-        description: Git commit sha, on which, to run this workflow
+  workflow_run:
+    workflows: ["never-trigger"]
+    types:
+      - completed
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}

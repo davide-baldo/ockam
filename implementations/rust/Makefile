@@ -1,7 +1,9 @@
 build:
 	cargo build
+	cargo tauri build
 build_release:
 	cargo --locked build --release
+	cargo --locked tauri build
 build_release_%:
 	cargo --locked build --release --package $*
 build_%:
