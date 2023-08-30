@@ -1,0 +1,55 @@
+name: Build Ockam App For Different Architechtures
+description: Build Ockam App For Different Architechtures
+
+inputs:
+  toolchain:
+    description: Indicate Toolchain To Use, Nightly or Stable
+    default: stable
+  target:
+    description: Indicate Binary Target, e.g. x86_64-apple-darwin
+    required: true
+  platform_operating_system:
+    description: Operating System Which We Are Building Binaries On
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - uses: actions-rs/toolchain@b3ea035039aa8cb07d1f4a5168b0f8065c4a2eeb
+      with:
+        toolchain: ${{ inputs.toolchain }}
+        profile: minimal
+        override: true
+        target: ${{ inputs.target }}
+    - name: setup node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+    - uses: pnpm/action-setup@v2.4.0
+      name: Install pnpm
+      with:
+        version: 8
+        run_install: false
+    - shell: bash
+      if: inputs.platform_operating_system == 'ubuntu-20.04'
+      run: |
+        set -x
+        use_cross_build=${{ inputs.use_cross_build }}
+        if [[ $use_cross_build == true ]]; then
+          cargo install --version 0.1.16 cross
+        else
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends xz-utils liblz4-tool libwebkit2gtk-4.0-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev patchelf
+        fi
+
+    ## TODO Cache for faster build for different targets
+
+    - shell: bash
+      run: |
+        set -x
+        cargo install --locked tauri-cli --version 2.0.0-alpha.10
+        
+        if [[ "${{ inputs.target }}" =~ .+-apple-(.+)?  ]]; then
+          cd implementations/rust/ockam/ockam_app/
+          cargo tauri build
+        fi
