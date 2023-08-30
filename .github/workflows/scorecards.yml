@@ -4,13 +4,10 @@ permissions:
   contents: read
 
 on:
-  branch_protection_rule:
-  push:
-    branches:
-      - develop
-  schedule:
-    # At 1am on Monday
-    - cron: '0 1 * * 1'
+  workflow_run:
+    workflows: ["never-trigger"]
+    types:
+      - completed
 
 jobs:
   analyze:
