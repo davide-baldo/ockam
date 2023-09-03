@@ -4,6 +4,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.85.0 - 2023-09-03
+
+### Added
+
+- Add popup window to tcp-outlet/service creation
+
+### Changed
+
+- Extract a full state machine for the secure channel handshake
+- Update ockam api services error responses to using a struct
+- Change some response functions
+- Updated dependencies
+
+### Fixed
+
+- Fix compat imports
+- Include compat box for no-std
+- Fix the cbor annotations for non-borrowed data
+
+### Removed
+
+- Remove verbose decode logic, add inner errors
+- Removed api lifetimes to access node manager operations directly
+
 ## 0.84.0 - 2023-09-02
 
 ### Added
