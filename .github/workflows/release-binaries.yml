@@ -254,8 +254,8 @@ jobs:
     - name: Copy Artifacts
       run: |
         set -x
-        find target/
-        cp target/${{ matrix.target }}/release/ockam ockam.${{ matrix.target }}
+
+        cp target/${{ matrix.target }}/release/ockam_command ockam.${{ matrix.target }}
         echo "ASSET_OCKAM_CLI=ockam.${{ matrix.target }}" >> $GITHUB_ENV
         if [ -e "target/${{ matrix.target }}/release/bundle/dmg/Ockam App"*dmg ]; then
           cp "target/${{ matrix.target }}/release/bundle/dmg/Ockam App"*dmg "Ockam_App_${{ matrix.target }}.dmg"
