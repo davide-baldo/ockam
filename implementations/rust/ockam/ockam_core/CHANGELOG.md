@@ -4,6 +4,40 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.90.0 - 2023-10-20
+
+### Added
+
+- Add popup window to tcp-outlet/service creation
+
+### Changed
+
+- Extract a full state machine for the secure channel handshake
+- Update ockam api services error responses to using a struct
+- Change some response functions
+- Extract the output of request results from the rpc code
+- Move the controller address to the node manager
+- Use better names for request / response headers
+- Use a more precise interface for the subscriptions trait
+- Use a secure client to enroll
+- Use the authority client to enroll
+- Package all reply / response methods into a client
+- Updated dependencies
+
+### Fixed
+
+- Fix compat imports
+- Include compat box for no-std
+- Fix the cbor annotations for non-borrowed data
+- Fix the no_std task
+
+### Removed
+
+- Remove verbose decode logic, add inner errors
+- Removed api lifetimes to access node manager operations directly
+- Remove an unnecessary pattern match
+- Remove the unused tag feature
+
 ## 0.89.0 - 2023-10-18
 
 ### Changed
