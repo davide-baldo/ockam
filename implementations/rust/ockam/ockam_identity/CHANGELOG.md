@@ -4,6 +4,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.96.0 - 2023-12-13
+
+### Added
+
+- Add stop_secure_channel test
+- Add `v2` module to `ockam_identity`
+- Add `VersionedData::data_type`. remove hash truncation
+
+### Changed
+
+- Improve type safety for `FlowControls`
+- Hide `Spawner` vs `Producer` logic under the hood
+- Make sure that ephemeral secrets are removed from memory
+- Switch to new `Identity` design
+- Improve `Vault` type-safety
+- Use `Identifier` as a return type in public api
+- Handle close and refresh credentials secure channel messages
+- Persist application data in a database
+- Updated dependencies
+
+### Fixed
+
+- Extend channel test
+- Fix flaky stop secure channel test
+- Fix some credential and timeout issues
+- Fix the passing of space name
+- Fix the creation of an identity with optional name and vault
+
+### Removed
+
+- Remove `FId`
+
 ## 0.95.0 - 2023-12-06
 
 ### Added
