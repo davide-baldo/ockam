@@ -4,6 +4,72 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.51.0 - 2023-12-13
+
+### Added
+
+- Added a direct local kafka for simple deployments and fixed service registry
+- Add authority tests
+- Add `VersionedData::data_type`. remove hash truncation
+
+### Changed
+
+- Improve type safety for `FlowControls`
+- Hide `Spawner` vs `Producer` logic under the hood
+- Replace `crate::Result` with `miette::Result` as the main result type on command
+- Update ockam api services error responses to using a struct
+- Improve tcp disconnect api
+- Use proper url data type
+- Create a relay to the default project after enrolling and when starting the app
+- Move common code to `api` so we can remove `command` from `app`
+- Switch to new `Identity` design
+- Adapt to new identity design
+- Move authority node code level above in `ockam_api`
+- Break up authenticator
+- Make `Timestamp` arithmetic operations usage safer
+- Cli's `random_name` function now returns human-readable two-word strings like 'fit-lark'
+- Move the controller address to the node manager
+- Use better names for request / response headers
+- Introduce a secure client for the controller
+- Use controller, authority and project nodes
+- Simplify connections
+- Introduce a supervised node manager to support connection replacements
+- Adjust the code after rebase
+- Move the in memory node to the ockam api crate
+- Package all reply / response methods into a client
+- Use the client in the background node
+- Put back the is_rust check to create forwarders
+- Rename forwarder to relay
+- Setup app's logs with the same features we use in the cli
+- Always using enum when representing the inlet connection status
+- Use `Identifier` as a return type in public api
+- Persist application data in a database
+- Slim down the node manager worker(s_ch)
+- Updated dependencies
+
+### Fixed
+
+- Fix the cbor annotations for non-borrowed data
+- Reset cli state if it can't be parsed
+- Fix the sending of messages
+- Fix the code after rebasing
+- Drop the in memory node and delete its node manager
+- Don't create default node when retrieving it and doesn't exist
+
+### Removed
+
+- Removed api lifetimes to access node manager operations directly
+- Remove the `projects` field from `NodeManager` to load them from the `CliState`
+- Remove scopes for authority members
+- Remove an unused method
+- Remove the need to keep a flag to skip defaults
+- Remove two parameters from requests to the controller
+- Remove the unused tag feature
+- Remove the unused rpc proxy service
+- Remove the supervised node manager
+- Remove the secure clients struct
+- Remove recursive calls in repository implementations
+
 ## 0.50.0 - 2023-12-06
 
 ### Added
