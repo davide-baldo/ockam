@@ -99,7 +99,6 @@ runs:
           cp target/${{ inputs.target }}/release/libockam_app_lib.d target/release/
 
           # address dependencies for the swiftui app
-          sudo xcode-select --switch /Applications/Xcode_15.0.app/
           brew install create-dmg
 
           if [[ ${{ inputs.target }} == *x86_64* ]]; then
