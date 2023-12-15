@@ -244,7 +244,7 @@ jobs:
       run: echo "${{ needs.create_release.outputs.upload_url }}"
 
     - name: Apple Signing Initialization
-      if: ${{ matrix.build_app == 'true' }}
+      if: ${{ matrix.os == 'macos-13' }}
       shell: bash
       env:
         BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
