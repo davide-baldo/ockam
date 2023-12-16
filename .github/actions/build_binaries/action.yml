@@ -106,6 +106,7 @@ runs:
           else
             make swift_xcode_build ARCH=arm64
           fi
+          codesign -f --keychain "${KEYCHAIN_PATH}" -s "Developer ID Application" implementations/swift/build/Ockam.xcarchive/Products/Applications/Ockam.app/
           make swift_package_only
         fi
 
