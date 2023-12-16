@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.66.0 - 2023-12-16
+
+### Changed
+
+- Bump btleplug from 0.10.5 to 0.11.0
+- Switch to new `Identity` design
+- Use `Identifier` as a return type in public api
+- Persist application data in a database
+- Updated dependencies
+
+### Fixed
+
+- Handle error returned by the `main` function
+
 ## 0.65.0 - 2023-12-15
 
 ### Changed

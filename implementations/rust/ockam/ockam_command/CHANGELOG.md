@@ -4,6 +4,103 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.111.0 - 2023-12-16
+
+### Added
+
+- Add more meaningful error messages for `CLiState` errors
+- Add "preview" tag to commands that are in developer preview
+- Add flag to control whether a node redirects the logs to a file
+- Add support to create and list tcp-outlets on the desktop app
+- Add cli subcommand to list share invitations
+- Added new cli command to retrieve the project's version
+- Added a direct local kafka for simple deployments and fixed service registry
+- Add installation instructions for ockam command
+- Add option to `reset` command to also remove orchestrator spaces
+- Add `VersionedData::data_type`. remove hash truncation
+
+### Changed
+
+- Improve error messages returned when parsing the node name argument
+- Replace `crate::Result` with `miette::Result` as the main result type on command
+- Foreground nodes always log to stdout
+- Scaffold for ockam_app with support for enroll
+- Formatting
+- Prototype command to check orchestrator nodes versions
+- Load controller address and identifier from env
+- Integrate orchestrator versions within the status command
+- Introduce an app state holding a context
+- Change some response functions
+- Optionally share service when creating the tcp-outlet
+- New sidecar to run inlet/outlet relay portal with one command
+- Simplify tcp-inlet creation
+- Move common code to `api` so we can remove `command` from `app`
+- Extract the output of request results from the rpc code
+- Replace most rpc new calls with either embedded or background
+- Switch to new `Identity` design
+- Move the controller address to the node manager
+- Implement subscriptions directly on the node manager
+- Start the node manager worker for remaining rpc calls
+- Extract an interface for subscriptions
+- Use better names for request / response headers
+- Use a more precise interface for the subscriptions trait
+- Introduce a secure client for the controller
+- Use a secure client to enroll
+- Use controller, authority and project nodes
+- Simplify the creation of a local node
+- Move the secure client close to secure channels
+- Reduce the dependencies of rpc
+- Move the rpc to ockam api as remote node
+- Rename local/remote node to in memory/background
+- Use only cli state to create a background node
+- Move the in memory node to the ockam api crate
+- Make the use of the controller client more explicit
+- Package all reply / response methods into a client
+- Use the client in the background node
+- Improve help of global verbose flag in ockam command
+- Improve `feedback` section of the `help` text
+- Improve cli "learn more" section from the help text
+- Drop dependency on termcolor for ockam_command crate
+- Use `Terminal`'s `is_tty` function to using `termimad`'s
+- Use `Terminal` to print output of `authenticated` commands
+- Use `Identifier` as a return type in public api
+- Persist application data in a database
+- Dynamically parse the `--at` argument for `relay create` command
+- Rename reset option with-orchestrator to all
+- Ensure help output is plain text when piped or redirected
+- If the command fails to load the state, it will throw a message and abort
+- Split `node create` command code into separate files for background/foreground modes
+- Clean up `project ticket` command
+- Option to enroll without creating space nor project
+- Updated dependencies
+
+### Fixed
+
+- Fix and simplify cli pager used to display help texts
+- Foreground nodes will write logs to file on a fresh start
+- Fix compilation errors
+- Read default values for `GlobalArgs` from env variables
+- Reset cli state if it can't be parsed
+- Reset cli state if it can't be parsed
+- `ockam status` now works without an existing identity
+- Breaking changes in upgrading dialoguer crate to 0.11.0
+- Fix a test argument
+- Drop the in memory node and delete its node manager
+- Fixed app crashes during refresh and during reset/shutdown
+- Replace hardcoded default node name by the one retrieved from state
+- Fixes many papercuts and better avoid and handle state resets
+- Honor the `timeout` arg value on `status` command
+- `reset` command do not fail when deleting orchestrator resources
+
+### Removed
+
+- Removed api lifetimes to access node manager operations directly
+- Remove the lifetime annotations for rpc
+- Remove the unused tag feature
+- Remove the supervised node manager
+- Remove the secure clients struct
+- Remove unused dependencies from ockam_command
+
 ## 0.110.0 - 2023-12-15
 
 ### Changed
