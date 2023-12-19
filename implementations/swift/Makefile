@@ -20,7 +20,6 @@ ockam_app_lib:
 package: ockam_command_release build_release package_only
 package_only:
 	xcodebuild -exportArchive -archivePath build/Ockam.xcarchive/ -exportPath build/ -exportOptionsPlist ockam/ockam_app/Ockam/ExportOptions.plist
-	cp ../../target/release/ockam "build/Portals, by Ockam.app/Contents/MacOS/ockam_command"
 	rm -f build/Ockam.dmg
 	create-dmg \
 			--no-internet-enable \

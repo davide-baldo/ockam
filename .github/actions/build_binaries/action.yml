@@ -106,7 +106,23 @@ runs:
           else
             make swift_xcode_build ARCH=arm64
           fi
-          codesign -f --keychain "${KEYCHAIN_PATH}" -s "Developer ID Application" implementations/swift/build/Ockam.xcarchive/Products/Applications/Ockam.app/
+
+          function sign_app() {
+            local keychain_path=$1
+            local app_path=$2
+
+            codesign \
+              --sign "Developer ID Application" \
+              "${app_path}" \
+              --force \
+              --keychain "${keychain_path}" \
+              --prefix "io.ockam." \
+              --options runtime \
+              --timestamp \
+              --verbose
+          }
+
+          sign_app "${KEYCHAIN_PATH}" "implementations/swift/build/Ockam.xcarchive/Products/Applications/Portals, by Ockam.app/"
+          sign_app "${KEYCHAIN_PATH}" "implementations/swift/build/Ockam.xcarchive/Products/Applications/Portals, by Ockam.app/Contents/MacOS/ockam"
           make swift_package_only
         fi
-
