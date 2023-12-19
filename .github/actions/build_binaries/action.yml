@@ -102,27 +102,20 @@ runs:
           brew install create-dmg
 
           if [[ ${{ inputs.target }} == *x86_64* ]]; then
-            make swift_xcode_build ARCH=x86_64
+            make swift_xcode_signed_build \
+              DEVELOPMENT_TEAM="3A56YKKGA5" \
+              PROVISIONING_PROFILE_SPECIFIER="GitHub Distribution" \
+              CODE_SIGN_IDENTITY="Developer ID Application" \
+              OTHER_CODE_SIGN_FLAGS="--keychain \"${keychain_path}\"" \
+              ARCH=x86_64
           else
-            make swift_xcode_build ARCH=arm64
+            make swift_xcode_signed_build \
+              DEVELOPMENT_TEAM="3A56YKKGA5" \
+              PROVISIONING_PROFILE_SPECIFIER="GitHub Distribution" \
+              CODE_SIGN_IDENTITY="Developer ID Application" \
+              OTHER_CODE_SIGN_FLAGS="--keychain \"${keychain_path}\"" \
+              ARCH=arm64
           fi
 
-          function sign_app() {
-            local keychain_path=$1
-            local app_path=$2
-
-            codesign \
-              --sign "Developer ID Application" \
-              "${app_path}" \
-              --force \
-              --keychain "${keychain_path}" \
-              --prefix "io.ockam." \
-              --options runtime \
-              --timestamp \
-              --verbose
-          }
-
-          sign_app "${KEYCHAIN_PATH}" "implementations/swift/build/Ockam.xcarchive/Products/Applications/Portals, by Ockam.app/"
-          sign_app "${KEYCHAIN_PATH}" "implementations/swift/build/Ockam.xcarchive/Products/Applications/Portals, by Ockam.app/Contents/MacOS/ockam"
           make swift_package_only
         fi
