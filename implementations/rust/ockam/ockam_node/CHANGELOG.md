@@ -4,6 +4,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.105.0 - 2023-12-19
+
+### Added
+
+- Add a debugger feature for the ockam_identity crate
+
+### Changed
+
+- Rebase on develop
+- Introduce an app state holding a context
+- Switch to new `Identity` design
+- Use better names for request / response headers
+- Move the secure client close to secure channels
+- Adjust the code after rebase
+- Package all reply / response methods into a client
+- Use the client in the background node
+- Updated dependencies
+
+### Fixed
+
+- Fix some clippy warnings
+- Fix a no std warning
+- Fix typos
+- Handle error returned by the `main` function
+
+### Removed
+
+- Removed api lifetimes to access node manager operations directly
+- Remove two parameters from requests to the controller
+
 ## 0.104.0 - 2023-12-16
 
 ### Changed
