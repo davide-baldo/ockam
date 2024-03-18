@@ -4,10 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 0.61.0 - 2024-03-11
+## 0.61.0 - 2024-03-18
 
 ### Added
 
+- Pass the tracing context at the ockam message level
+- Add policies for resource types
+- Improve portals reliability and integration tests
+- Add an environment variable to configure a crates filter for log messages
+- Create time-limited journeys
+- Hash the host name used in the trace id
+- Refactor `Project`-related code
+- Update enroll ux with new help text, display, and log progress status messages
+- Start a new trace for a background node
+- Rework migrations
 - Tune the timeouts for checking if a node is ready
 - Added manual tests to measure latency
 - Upgraded kafka library, with kafka 3.7.0 support
@@ -17,18 +27,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Instrument more functions for secure channels
 - Start a new trace before sending a transport message
 - Update display, log output in frequently used commands
+- Introduced several cpu consumption optimizations
+- Add an environment variable to specify if a user is an ockam developer
 - Updated dependencies
 
 ### Changed
 
+- Enable tracing by default
+- Incorporate review comments
+- Extract the progress display as a separate struct
+- Get the default project only once
 - Don't initialize logging at all if log is not enabled
 - Rename methods and variables to insist on the exporting
 - Refactor the code thanks to pr review comments
+- Do small renaming of some local variables
 
 ### Fixed
 
+- Fixed kafka-related flaky tests
+- Put the tracing context field under a compilation flag
+- Avoid triggering tokio invalid reference drop in test
+- Disable portal packet counter field
+- Do not enforce enrollment limit
+- Do not log messages by default on command parsing errors
+- Don't set a logging appender when logging is disabled
+- Fix a sql query
+- Get project identifier from model, without building the whole identity
+- Use project auth identifier in the journey instead of identity
+- Fix the flushing of traces
+- Make the journeys test more robust
+- Make sure all the handshake spans end up in the same trace for a secure channel use
+- Fix the root trace for a journey
+- Fix the off logging configuration
 - Fix the blocking processing of spans and log records
 - Fix the creation of a trace id from a project id in tests
+
+### Removed
+
+- Remove `--resource` and `--resource-type` args from `policy show|list|delete`
+- Remove some unnecessary context stops
+- Remove resources when deleting a node
 
 ## 0.60.0 - 2024-02-28
 

@@ -4,13 +4,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 0.108.0 - 2024-03-11
+## 0.108.0 - 2024-03-18
 
 ### Added
 
+- Pass the tracing context at the ockam message level
+- Improve portals reliability and integration tests
 - Add spans for portals
 - Instrument the tcp portal
+- Introduced several cpu consumption optimizations
 - Updated dependencies
+
+### Fixed
+
+- Disable portal packet counter field
+- Race condition when payload is sent before the pong message
 
 ## 0.107.0 - 2024-02-28
 

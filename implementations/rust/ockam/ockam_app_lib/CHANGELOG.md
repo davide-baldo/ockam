@@ -4,15 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 0.118.0 - 2024-03-11
+## 0.118.0 - 2024-03-18
 
 ### Added
 
+- Pass the tracing context at the ockam message level
+- Add policies for resource types
+- Add an environment variable to configure a crates filter for log messages
+- Refactor `Project`-related code
 - Add the node name to spans
 - Updated dependencies
 
 ### Changed
 
+- Enable tracing by default
 - Rename methods and variables to insist on the exporting
 
 ## 0.117.0 - 2024-02-28

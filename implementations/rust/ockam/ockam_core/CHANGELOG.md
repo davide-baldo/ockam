@@ -4,15 +4,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 0.103.0 - 2024-03-11
+## 0.103.0 - 2024-03-18
 
 ### Added
 
+- Pass the tracing context at the ockam message level
+- Add policies for resource types
 - Added manual tests to measure latency
 - Propagating the errors from api clients to the command
 - Start a new trace when receiving a transport message
 - Start a new trace before sending a transport message
+- Introduced several cpu consumption optimizations
 - Updated dependencies
+
+### Changed
+
+- Enable tracing by default
+- Incorporate review comments
+
+### Fixed
+
+- Put the tracing context field under a compilation flag
+- Fix the root trace for a journey
 
 ## 0.102.0 - 2024-02-26
 

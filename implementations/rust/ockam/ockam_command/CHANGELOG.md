@@ -4,10 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 0.118.0 - 2024-03-11
+## 0.118.0 - 2024-03-18
 
 ### Added
 
+- Pass the tracing context at the ockam message level
+- Add policies for resource types
+- Improve portals reliability and integration tests
+- Add an environment variable to configure a crates filter for log messages
+- Create time-limited journeys
+- Refactor `Project`-related code
+- Update enroll ux with new help text, display, and log progress status messages
+- Display initialization errors when running ockam
+- Start a new trace for a background node
+- Show ockam home on initialization issue
 - Update ux strings in enroll, project, project ticket, project enroll commands
 - Tune the timeouts for checking if a node is ready
 - Add syntax highlighting for command's fenced code blocks
@@ -16,18 +26,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Propagating the errors from api clients to the command
 - Add the node name to spans
 - Update display, log output in frequently used commands
+- `node create` can be run given a configuration file
 - Updated dependencies
 
 ### Changed
 
+- Enable tracing by default
+- Incorporate review comments
+- Extract the progress display as a separate struct
 - Rename methods and variables to insist on the exporting
 - Disable syntax highlighting in command help
+- Refactor the parsing and execution of run commands
+- Change help message shown in command errors output
 
 ### Fixed
 
+- Return error in `enroll` command if orchestrator fails to enrol identity
+- Command upgrade check
+- Do not log messages by default on command parsing errors
+- Fix the flushing of traces
+- Fix the off logging configuration
 - Fail background node creation if passed identity does not exist
 - Fix the blocking processing of spans and log records
 - Only display the error once when an identity is not found for the enroll command
+
+### Removed
+
+- Remove `--resource` and `--resource-type` args from `policy show|list|delete`
+- Remove some unnecessary context stops
 
 ## 0.117.0 - 2024-02-28
 
