@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.106.0 - 2024-03-18
+
+### Added
+
+- Pass the tracing context at the ockam message level
+- Improve portals reliability and integration tests
+- Refactor `Project`-related code
+- Remove unused encryptor address from secure channel messages
+- Instrument more functions for secure channels
+- Introduced several cpu consumption optimizations
+- Updated dependencies
+
+### Changed
+
+- Incorporate review comments
+
+### Removed
+
+- Remove some unnecessary context stops
+
 ## 0.105.0 - 2024-03-11
 
 ### Added
