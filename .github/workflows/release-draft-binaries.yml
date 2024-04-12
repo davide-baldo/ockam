@@ -29,141 +29,141 @@ jobs:
       upload_url: ${{ steps.release_upload_url.outputs.upload_url }}
       tag_name: ${{ steps.release_version.outputs.tag_name }}
     steps:
-      - name: Checkout Ockam
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
-        with:
-          fetch-depth: 0
-          ref: ${{ github.event.inputs.release_branch }}
+    - name: Checkout Ockam
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+      with:
+        fetch-depth: 0
+        ref: ${{ github.event.inputs.release_branch }}
 
-      - name: Import GPG key
-        uses: build-trust/.github/actions/import_gpg@ae127cb92387ed76f24d4d1c6d6bfc2d382f7946
-        with:
-          gpg_private_key: '${{ secrets.GPG_PRIVATE_KEY }}'
-          gpg_password: '${{ secrets.GPG_PASSPHRASE }}'
-          gpg_name: '${{ secrets.GPG_USER_NAME }}'
-          gpg_email: '${{ secrets.GPG_EMAIL }}'
+    - name: Import GPG key
+      uses: build-trust/.github/actions/import_gpg@ae127cb92387ed76f24d4d1c6d6bfc2d382f7946
+      with:
+        gpg_private_key: '${{ secrets.GPG_PRIVATE_KEY }}'
+        gpg_password: '${{ secrets.GPG_PASSPHRASE }}'
+        gpg_name: '${{ secrets.GPG_USER_NAME }}'
+        gpg_email: '${{ secrets.GPG_EMAIL }}'
 
-      - name: Get Release Text
-        id: release_version
-        env:
-          GIT_TAG: '${{ github.event.inputs.git_tag }}'
-        run: |
-          cargo install tomlq
-          set -x
-          source tools/scripts/release/crates-to-publish.sh
-
-          # Add Ockam as first crate
-          ockam_version=$(eval "tomlq package.version -f implementations/rust/ockam/ockam/Cargo.toml")
-          name=$(eval "tomlq package.name -f implementations/rust/ockam/ockam/Cargo.toml")
-
-          text="Ockam $ockam_version"
-
-
+    - name: Get Release Text
+      id: release_version
+      env:
+        GIT_TAG: '${{ github.event.inputs.git_tag }}'
+      run: |
+        cargo install tomlq
+        set -x
+        source tools/scripts/release/crates-to-publish.sh
+        
+        # Add Ockam as first crate
+        ockam_version=$(eval "tomlq package.version -f implementations/rust/ockam/ockam/Cargo.toml")
+        name=$(eval "tomlq package.name -f implementations/rust/ockam/ockam/Cargo.toml")
+        
+        text="Ockam $ockam_version"
+        
+        
+        text="$text
+        
+        # Homebrew
+        
+        To install this release using Homebrew:
+        
+        \`\`\`bash
+        $ brew install build-trust/ockam/ockam
+        \`\`\`"
+        
+        # Install Docker image
+        text="$text
+        
+        # Docker
+        
+        To use the Docker OCI package:
+        
+        \`\`\`bash
+        docker pull ghcr.io/build-trust/ockam:$ockam_version
+        \`\`\`"
+        
+        text="$text
+        
+        # Precompiled Binaries
+        
+        \`\`\`bash
+        # download sha256sums.txt
+        curl --proto '=https' --tlsv1.2 -sSfL -O \\
+          https://github.com/build-trust/ockam/releases/download/ockam_v${ockam_version}/sha256sums.txt
+        
+        # download sha256sums.txt.sig
+        curl --proto '=https' --tlsv1.2 -sSfL -O \\
+          https://github.com/build-trust/ockam/releases/download/ockam_v${ockam_version}/sha256sums.txt.sig
+        
+        # download our release public key
+        curl --proto '=https' --tlsv1.2 -sSfL -o ockam.pub \\
+          https://raw.githubusercontent.com/build-trust/ockam/develop/tools/docker/cosign.pub
+        
+        # verify signatures
+        cosign verify-blob --key ockam.pub --signature sha256sums.txt.sig sha256sums.txt
+        
+        # download ockam command binary for your architecture
+        curl --proto '=https' --tlsv1.2 -sSfL -O \\
+          https://github.com/build-trust/ockam/releases/download/ockam_v${ockam_version}/ockam.x86_64-unknown-linux-gnu
+        
+        # verify that the sha256 hash of the downloaded binary is the same as
+        # the corresponding hash mentioned in sha256sums.txt
+        cat sha256sums.txt | grep ockam.x86_64-unknown-linux-gnu | sha256sum -c
+        
+        # rename the download binary and give it permission to execute
+        mv ockam.x86_64-unknown-linux-gnu ockam
+        chmod u+x ockam
+        \`\`\`"
+        
+        text="$text
+        
+        # Rust Crates
+        
+        To use Ockam as a Rust library, run the following command within your project directory:
+        
+        \`\`\`bash
+        cargo add ockam@$ockam_version
+        \`\`\`
+        
+        The following crates were published as part of this release:
+        - \`$name $ockam_version\` ([Documentation](https://docs.rs/$name/$ockam_version/$name/), \
+          [CHANGELOG](https://github.com/build-trust/ockam/blob/ockam_v$ockam_version/implementations/rust/ockam/$name/CHANGELOG.md))"
+        
+        for crate in ${updated_crates[@]}; do
+          version=$(eval "tomlq package.version -f $crate/Cargo.toml")
+          name=$(eval "tomlq package.name -f $crate/Cargo.toml")
+        
+          if [[ $name == "ockam" ]]; then
+            echo "Skipping ockam crate"
+            continue
+          fi
+        
           text="$text
+        - \`$name $version\` ([Documentation](https://docs.rs/$name/$version/$name/), \
+          [CHANGELOG](https://github.com/build-trust/ockam/blob/ockam_v$ockam_version/implementations/rust/ockam/$name/CHANGELOG.md))";
+        done
+        
+        echo "version=$ockam_version" >> $GITHUB_OUTPUT
+        echo "tag_name=ockam_v$ockam_version" >> $GITHUB_OUTPUT
+        
+        echo "$text" > release_note.md
+        cat release_note.md
+        
+        # Add tag
+        git tag -s ockam_v$ockam_version -m "Ockam Release"
+        git push --tags
 
-          # Homebrew
+    - name: Create GitHub release
+      id: release_upload_url
+      uses: actions/create-release@4c11c9fe1dcd9636620a16455165783b20fc7ea0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        release_name: 'Ockam v${{ steps.release_version.outputs.version }}'
+        tag_name: '${{ steps.release_version.outputs.tag_name }}'
+        body_path: 'release_note.md'
+        prerelease: true
 
-          To install this release using Homebrew:
-
-          \`\`\`bash
-          $ brew install build-trust/ockam/ockam
-          \`\`\`"
-
-          # Install Docker image
-          text="$text
-
-          # Docker
-
-          To use the Docker OCI package:
-
-          \`\`\`bash
-          docker pull ghcr.io/build-trust/ockam:$ockam_version
-          \`\`\`"
-
-          text="$text
-
-          # Precompiled Binaries
-
-          \`\`\`bash
-          # download sha256sums.txt
-          curl --proto '=https' --tlsv1.2 -sSfL -O \\
-            https://github.com/build-trust/ockam/releases/download/ockam_v${ockam_version}/sha256sums.txt
-
-          # download sha256sums.txt.sig
-          curl --proto '=https' --tlsv1.2 -sSfL -O \\
-            https://github.com/build-trust/ockam/releases/download/ockam_v${ockam_version}/sha256sums.txt.sig
-
-          # download our release public key
-          curl --proto '=https' --tlsv1.2 -sSfL -o ockam.pub \\
-            https://raw.githubusercontent.com/build-trust/ockam/develop/tools/docker/cosign.pub
-
-          # verify signatures
-          cosign verify-blob --key ockam.pub --signature sha256sums.txt.sig sha256sums.txt
-
-          # download ockam command binary for your architecture
-          curl --proto '=https' --tlsv1.2 -sSfL -O \\
-            https://github.com/build-trust/ockam/releases/download/ockam_v${ockam_version}/ockam.x86_64-unknown-linux-gnu
-
-          # verify that the sha256 hash of the downloaded binary is the same as
-          # the corresponding hash mentioned in sha256sums.txt
-          cat sha256sums.txt | grep ockam.x86_64-unknown-linux-gnu | sha256sum -c
-
-          # rename the download binary and give it permission to execute
-          mv ockam.x86_64-unknown-linux-gnu ockam
-          chmod u+x ockam
-          \`\`\`"
-
-          text="$text
-
-          # Rust Crates
-
-          To use Ockam as a Rust library, run the following command within your project directory:
-
-          \`\`\`bash
-          cargo add ockam@$ockam_version
-          \`\`\`
-
-          The following crates were published as part of this release:
-          - \`$name $ockam_version\` ([Documentation](https://docs.rs/$name/$ockam_version/$name/), \
-            [CHANGELOG](https://github.com/build-trust/ockam/blob/ockam_v$ockam_version/implementations/rust/ockam/$name/CHANGELOG.md))"
-
-          for crate in ${updated_crates[@]}; do
-            version=$(eval "tomlq package.version -f $crate/Cargo.toml")
-            name=$(eval "tomlq package.name -f $crate/Cargo.toml")
-
-            if [[ $name == "ockam" ]]; then
-              echo "Skipping ockam crate"
-              continue
-            fi
-
-            text="$text
-          - \`$name $version\` ([Documentation](https://docs.rs/$name/$version/$name/), \
-            [CHANGELOG](https://github.com/build-trust/ockam/blob/ockam_v$ockam_version/implementations/rust/ockam/$name/CHANGELOG.md))";
-          done
-
-          echo "version=$ockam_version" >> $GITHUB_OUTPUT
-          echo "tag_name=ockam_v$ockam_version" >> $GITHUB_OUTPUT
-
-          echo "$text" > release_note.md
-          cat release_note.md
-
-          # Add tag
-          git tag -s ockam_v$ockam_version -m "Ockam Release"
-          git push --tags
-
-      - name: Create GitHub release
-        id: release_upload_url
-        uses: actions/create-release@4c11c9fe1dcd9636620a16455165783b20fc7ea0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          release_name: 'Ockam v${{ steps.release_version.outputs.version }}'
-          tag_name: '${{ steps.release_version.outputs.tag_name }}'
-          body_path: 'release_note.md'
-          prerelease: true
-
-      - name: Echo Link
-        run: echo "${{ steps.release_upload_url.outputs.html_url }}"
+    - name: Echo Link
+      run: echo "${{ steps.release_upload_url.outputs.html_url }}"
 
 
   build_release:
@@ -358,90 +358,90 @@ jobs:
       fail-fast: false
       matrix:
         job:
-          - { target: aarch64-unknown-linux-gnu   , os: ubuntu-20.04 , use-cross: true }
-          - { target: x86_64-unknown-linux-gnu    , os: ubuntu-20.04  }
-          - { target: aarch64-apple-darwin        , os: macos-14      }
-          - { target: x86_64-apple-darwin         , os: macos-14      }
+        - {target: aarch64-unknown-linux-gnu   , os: ubuntu-20.04 , use-cross: true}
+        - {target: x86_64-unknown-linux-gnu    , os: ubuntu-20.04}
+        - {target: aarch64-apple-darwin        , os: macos-14}
+        - {target: x86_64-apple-darwin         , os: macos-14}
 
     runs-on: ${{ matrix.job.os }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
-        with:
-          ref: ${{ github.event.inputs.release_branch }}
+    - name: Checkout repository
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+      with:
+        ref: ${{ github.event.inputs.release_branch }}
 
-      - name: Install Rust toolchain
-        run: |
-          # This will allow us update to rust version indicated in our rust-toolchain.toml file
-          rustup show
-          rustup target add ${{ matrix.job.target }}
+    - name: Install Rust toolchain
+      run: |
+        # This will allow us update to rust version indicated in our rust-toolchain.toml file
+        rustup show
+        rustup target add ${{ matrix.job.target }}
 
-      - name: Install Cross
-        if: matrix.job.use-cross == true
-        run: cargo install --version 0.2.4 cross
+    - name: Install Cross
+      if: matrix.job.use-cross == true
+      run: cargo install --version 0.2.4 cross
 
-      - name: Build NIFs
-        run: |
-          set -ex
+    - name: Build NIFs
+      run: |
+        set -ex
+        
+        if [[ '${{ matrix.job.use-cross }}' == 'true' ]]; then
+          cross build --target ${{ matrix.job.target }} -p ockam_rust_elixir_nifs --release
+          exit
+        fi
+        
+        rustup target add ${{ matrix.job.target }}
+        cargo build --target ${{ matrix.job.target }} -p ockam_rust_elixir_nifs --release
 
-          if [[ '${{ matrix.job.use-cross }}' == 'true' ]]; then
-            cross build --target ${{ matrix.job.target }} -p ockam_rust_elixir_nifs --release
-            exit
-          fi
+    - name: List
+      run: |
+        ls target/${{ matrix.job.target }}/release/
 
-          rustup target add ${{ matrix.job.target }}
-          cargo build --target ${{ matrix.job.target }} -p ockam_rust_elixir_nifs --release
+    - name: Rename Build
+      run: |
+        cargo install tomlq
+        ockam_version=$(eval "tomlq package.version -f implementations/rust/ockam/ockam/Cargo.toml")
+        
+        final_name="libockam_rust_elixir_nifs-v${ockam_version}-nif-2.15-${{ matrix.job.target }}.so"
+        if [[ "${{ matrix.job.target }}" == *"darwin"* ]]; then
+        cp target/${{ matrix.job.target }}/release/libockam_rust_elixir_nifs.dylib "$final_name"
+        else
+        cp target/${{ matrix.job.target }}/release/libockam_rust_elixir_nifs.so "$final_name"
+        fi
+        
+        tar -zcvf "${final_name}.tar.gz" "$final_name"
+        echo "FILE_NAME=${final_name}.tar.gz" >> $GITHUB_ENV
 
-      - name: List
-        run: |
-          ls target/${{ matrix.job.target }}/release/
+    - name: Install Cosign
+      uses: sigstore/cosign-installer@59acb6260d9c0ba8f4a2f9d9b48431a222b68e20
+      with:
+        cosign-release: 'v2.0.0'
 
-      - name: Rename Build
-        run: |
-          cargo install tomlq
-          ockam_version=$(eval "tomlq package.version -f implementations/rust/ockam/ockam/Cargo.toml")
+    - name: Sign NIFs
+      env:
+        PRIVATE_KEY: '${{ secrets.COSIGN_PRIVATE_KEY }}'
+        COSIGN_PASSWORD: '${{ secrets.COSIGN_PRIVATE_KEY_PASSWORD }}'
+      run: |
+        cosign sign-blob --yes --key env://PRIVATE_KEY ${{ env.FILE_NAME }} > "${{ env.FILE_NAME }}.sig"
 
-          final_name="libockam_rust_elixir_nifs-v${ockam_version}-nif-2.15-${{ matrix.job.target }}.so"
-          if [[ "${{ matrix.job.target }}" == *"darwin"* ]]; then
-          cp target/${{ matrix.job.target }}/release/libockam_rust_elixir_nifs.dylib "$final_name"
-          else
-          cp target/${{ matrix.job.target }}/release/libockam_rust_elixir_nifs.so "$final_name"
-          fi
+    - name: Upload Library
+      uses: actions/upload-release-asset@ef2adfe8cb8ebfa540930c452c576b3819990faa
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create_release.outputs.upload_url }}
+        asset_path: "${{ env.FILE_NAME }}"
+        asset_name: "${{ env.FILE_NAME }}"
+        asset_content_type: application/octet-stream
 
-          tar -zcvf "${final_name}.tar.gz" "$final_name"
-          echo "FILE_NAME=${final_name}.tar.gz" >> $GITHUB_ENV
-
-      - name: Install Cosign
-        uses: sigstore/cosign-installer@59acb6260d9c0ba8f4a2f9d9b48431a222b68e20
-        with:
-          cosign-release: 'v2.0.0'
-
-      - name: Sign NIFs
-        env:
-          PRIVATE_KEY: '${{ secrets.COSIGN_PRIVATE_KEY }}'
-          COSIGN_PASSWORD: '${{ secrets.COSIGN_PRIVATE_KEY_PASSWORD }}'
-        run: |
-          cosign sign-blob --yes --key env://PRIVATE_KEY ${{ env.FILE_NAME }} > "${{ env.FILE_NAME }}.sig"
-
-      - name: Upload Library
-        uses: actions/upload-release-asset@ef2adfe8cb8ebfa540930c452c576b3819990faa
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.create_release.outputs.upload_url }}
-          asset_path: "${{ env.FILE_NAME }}"
-          asset_name: "${{ env.FILE_NAME }}"
-          asset_content_type: application/octet-stream
-
-      - name: Upload Signature
-        uses: actions/upload-release-asset@ef2adfe8cb8ebfa540930c452c576b3819990faa
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.create_release.outputs.upload_url }}
-          asset_path: ${{ env.FILE_NAME }}.sig
-          asset_name: ${{ env.FILE_NAME }}.sig
-          asset_content_type: application/octet-stream
+    - name: Upload Signature
+      uses: actions/upload-release-asset@ef2adfe8cb8ebfa540930c452c576b3819990faa
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create_release.outputs.upload_url }}
+        asset_path: ${{ env.FILE_NAME }}.sig
+        asset_name: ${{ env.FILE_NAME }}.sig
+        asset_content_type: application/octet-stream
 
   sign_release:
     name: Sign All Assets
@@ -452,41 +452,41 @@ jobs:
       contents: write
 
     steps:
-      - name: Fetch All Assets
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release download ${{ needs.create_release.outputs.tag_name }} -R ${{ github.repository_owner }}/ockam
+    - name: Fetch All Assets
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: gh release download ${{ needs.create_release.outputs.tag_name }} -R ${{ github.repository_owner }}/ockam
 
-      - name: Generate File SHASum
-        run: shasum -a 256 *ockam* > sha256sums.txt
+    - name: Generate File SHASum
+      run: shasum -a 256 *ockam* > sha256sums.txt
 
-      - name: Install Cosign
-        uses: sigstore/cosign-installer@59acb6260d9c0ba8f4a2f9d9b48431a222b68e20
-        with:
-          cosign-release: 'v2.0.0'
+    - name: Install Cosign
+      uses: sigstore/cosign-installer@59acb6260d9c0ba8f4a2f9d9b48431a222b68e20
+      with:
+        cosign-release: 'v2.0.0'
 
-      - name: Sign Files
-        env:
-          PRIVATE_KEY: '${{ secrets.COSIGN_PRIVATE_KEY }}'
-          COSIGN_PASSWORD: '${{ secrets.COSIGN_PRIVATE_KEY_PASSWORD }}'
-        run: cosign sign-blob --yes --key env://PRIVATE_KEY sha256sums.txt > sha256sums.txt.sig
+    - name: Sign Files
+      env:
+        PRIVATE_KEY: '${{ secrets.COSIGN_PRIVATE_KEY }}'
+        COSIGN_PASSWORD: '${{ secrets.COSIGN_PRIVATE_KEY_PASSWORD }}'
+      run: cosign sign-blob --yes --key env://PRIVATE_KEY sha256sums.txt > sha256sums.txt.sig
 
-      - name: Upload SHASum File
-        uses: actions/upload-release-asset@ef2adfe8cb8ebfa540930c452c576b3819990faa
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.create_release.outputs.upload_url }}
-          asset_path: sha256sums.txt
-          asset_name: sha256sums.txt
-          asset_content_type: application/octet-stream
+    - name: Upload SHASum File
+      uses: actions/upload-release-asset@ef2adfe8cb8ebfa540930c452c576b3819990faa
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create_release.outputs.upload_url }}
+        asset_path: sha256sums.txt
+        asset_name: sha256sums.txt
+        asset_content_type: application/octet-stream
 
-      - name: Upload SHASum Signature File
-        uses: actions/upload-release-asset@ef2adfe8cb8ebfa540930c452c576b3819990faa
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.create_release.outputs.upload_url }}
-          asset_path: sha256sums.txt.sig
-          asset_name: sha256sums.txt.sig
-          asset_content_type: application/octet-stream
+    - name: Upload SHASum Signature File
+      uses: actions/upload-release-asset@ef2adfe8cb8ebfa540930c452c576b3819990faa
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create_release.outputs.upload_url }}
+        asset_path: sha256sums.txt.sig
+        asset_name: sha256sums.txt.sig
+        asset_content_type: application/octet-stream
