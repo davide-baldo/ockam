@@ -55,9 +55,9 @@ runs:
         fi
 
         if [[ $use_cross_build == "true" ]]; then
-          cross build --bin ockam --target ${{ inputs.target }} --release -F ockam_command/aws-lc
+          cross build --bin ockam --target ${{ inputs.target }} --release --no-default-features -F ockam_command/aws-lc -F ockam_command/orchestrator
         else
-          cargo build --bin ockam --target ${{ inputs.target }} --release -F ockam_command/aws-lc
+          cargo build --bin ockam --target ${{ inputs.target }} --release --no-default-features -F ockam_command/aws-lc -F ockam_command/orchestrator
         fi
 
         cp target/${{ inputs.target }}/release/ockam target/${{ inputs.target }}/release/ockam_command
@@ -77,9 +77,9 @@ runs:
 
           # first we build the rust library, cross compiling if needed
           if [[ $use_cross_build == "true" ]]; then
-            cross build -p ockam_app_lib --target ${{ inputs.target }} --release -F ockam_command/aws-lc
+            cross build -p ockam_app_lib --target ${{ inputs.target }} --release --no-default-features -F ockam_command/aws-lc -F ockam_command/orchestrator
           else
-            cargo build -p ockam_app_lib --target ${{ inputs.target }} --release -F ockam_command/aws-lc
+            cargo build -p ockam_app_lib --target ${{ inputs.target }} --release --no-default-features -F ockam_command/aws-lc -F ockam_command/orchestrator
           fi
 
           # copy the ockam_app_lib and ockam binary in target/release/ where xcode is expecting them
