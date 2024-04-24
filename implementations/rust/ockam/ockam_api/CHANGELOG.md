@@ -4,6 +4,102 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.67.0 - 2024-04-24
+
+### Added
+
+- Pass the tracing context at the ockam message level
+- Add policies for resource types
+- Improve portals reliability and integration tests
+- Add an environment variable to configure a crates filter for log messages
+- Create time-limited journeys
+- Hash the host name used in the trace id
+- Refactor `Project`-related code
+- Update enroll ux with new help text, display, and log progress status messages
+- Start a new trace for a background node
+- Rework migrations
+- Tune the timeouts for checking if a node is ready
+- Added manual tests to measure latency
+- Upgraded kafka library, with kafka 3.7.0 support
+- Propagating the errors from api clients to the command
+- Add the node name to spans
+- Instrument the tcp portal
+- Instrument more functions for secure channels
+- Start a new trace before sending a transport message
+- Update display, log output in frequently used commands
+- Introduced several cpu consumption optimizations
+- Add an environment variable to specify if a user is an ockam developer
+- Authority project admin credentials
+- Admins are implicit members, enrollers as admins
+- `identity create` can import an identity
+- Backcompatible encoding/decoding optimizations
+- Improve output for `enroll` command
+- Add one second cache for incoming and outgoing access control
+- Flag to enable/disable enrollers-as-admins on authority
+- Use https for the default opentelemetry collector endpoint
+- Add bats coverage for `node create ./config.yaml` command
+- Reply to v1 transport messages with v1 transport messages
+- Enable the tracing context on the rust side
+- Store enrollment email to local db
+- Create 3 separate credential retriever types
+- Introduce `disable_trust_context_id` argument for authority
+- Add a attribute with the content of a node configuration file
+- Add a user journey event when an identity has been created or imported
+- Use outgoing access control
+- Added kafka-inlet command and relative config side
+- Support https for outlets
+- Export opentelemetry traces by default
+- Make the api for creating outlets more flexible
+- Support progress_bar in command notifications
+- Improve output of `node create` command
+- Scope some repositories to a given node name
+- When deleting a node, wait for node's process to finish
+- Updated dependencies
+
+### Changed
+
+- Enable tracing by default
+- Incorporate review comments
+- Extract the progress display as a separate struct
+- Get the default project only once
+- Don't initialize logging at all if log is not enabled
+- Rename methods and variables to insist on the exporting
+- Refactor the code thanks to pr review comments
+- Do small renaming of some local variables
+- Simplify `ProgressDisplay` to remove the mutex used to stop the message recv end
+- Organize bats tests in different suites
+- Move terminal code from command to api
+
+### Fixed
+
+- Fixed kafka-related flaky tests
+- Put the tracing context field under a compilation flag
+- Avoid triggering tokio invalid reference drop in test
+- Disable portal packet counter field
+- Do not enforce enrollment limit
+- Do not log messages by default on command parsing errors
+- Don't set a logging appender when logging is disabled
+- Fix a sql query
+- Get project identifier from model, without building the whole identity
+- Use project auth identifier in the journey instead of identity
+- Fix the flushing of traces
+- Make the journeys test more robust
+- Make sure all the handshake spans end up in the same trace for a secure channel use
+- Fix the root trace for a journey
+- Fix the off logging configuration
+- Fix the blocking processing of spans and log records
+- Fix the creation of a trace id from a project id in tests
+- Fix routing and flow control for local kafka outlets
+- Kms identity can be used in regular api nodes
+- Set the global error handler even if logging is off
+
+### Removed
+
+- Remove `--resource` and `--resource-type` args from `policy show|list|delete`
+- Remove some unnecessary context stops
+- Remove resources when deleting a node
+- Removed an empty file
+
 ## 0.66.0 - 2024-04-24
 
 ### Added

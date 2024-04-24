@@ -4,6 +4,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.116.0 - 2024-04-24
+
+### Added
+
+- Pass the tracing context at the ockam message level
+- Add policies for resource types
+- Improve portals reliability and integration tests
+- Rework migrations
+- Start a new trace before sending a transport message
+- Introduced several cpu consumption optimizations
+- Backcompatible encoding/decoding optimizations
+- Reply to v1 transport messages with v1 transport messages
+- Enable the tracing context on the rust side
+- Added metadata and terminal concepts
+- Scope some repositories to a given node name
+- Switch to `aws-lc-rs` library for encryption/decryption
+- Command `aws-lc` library via a feature
+- Updated dependencies
+
+### Changed
+
+- Move the logic of how to sort and apply migrations into the `NextMigration` enum
+
+### Fixed
+
+- Make sure all the handshake spans end up in the same trace for a secure channel use
+- Shutdown processor and worker on init fail
+
+### Removed
+
+- Remove some unnecessary context stops
+- Remove resources when deleting a node
+
 ## 0.115.0 - 2024-04-24
 
 ### Added
