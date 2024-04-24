@@ -4,6 +4,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.113.0 - 2024-04-24
+
+### Added
+
+- Pass the tracing context at the ockam message level
+- Improve portals reliability and integration tests
+- Add spans for portals
+- Instrument the tcp portal
+- Introduced several cpu consumption optimizations
+- Backcompatible encoding/decoding optimizations
+- Added metadata and terminal concepts
+- Fix portals protocol
+- Support https for outlets
+- Make the api for creating outlets more flexible
+- Switch from `native-tls` to `tokio-rustls` for outlet tls
+- Updated dependencies
+
+### Fixed
+
+- Disable portal packet counter field
+- Race condition when payload is sent before the pong message
+- Fix routing and flow control for local kafka outlets
+- Decode a transport message even without a tracing_context field
+
 ## 0.112.0 - 2024-04-23
 
 ### Added

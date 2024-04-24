@@ -4,6 +4,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.110.0 - 2024-04-24
+
+### Added
+
+- Pass the tracing context at the ockam message level
+- Improve portals reliability and integration tests
+- Refactor `Project`-related code
+- Remove unused encryptor address from secure channel messages
+- Instrument more functions for secure channels
+- Introduced several cpu consumption optimizations
+- Backcompatible encoding/decoding optimizations
+- Add `project-member` subcommand
+- Support non-utf8 attributes in `Display` impl
+- Create 3 separate credential retriever types
+- Added metadata and terminal concepts
+- Scope some repositories to a given node name
+- Updated dependencies
+
+### Changed
+
+- Incorporate review comments
+
+### Removed
+
+- Remove some unnecessary context stops
+
 ## 0.109.0 - 2024-04-23
 
 ### Added

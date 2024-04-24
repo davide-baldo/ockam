@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.123.0 - 2024-04-24
+
+### Added
+
+- Pass the tracing context at the ockam message level
+- Add policies for resource types
+- Add an environment variable to configure a crates filter for log messages
+- Refactor `Project`-related code
+- Add the node name to spans
+- Authority project admin credentials
+- Create 3 separate credential retriever types
+- Use outgoing access control
+- Support https for outlets
+- Scope some repositories to a given node name
+- Updated dependencies
+
+### Changed
+
+- Enable tracing by default
+- Rename methods and variables to insist on the exporting
+
 ## 0.122.0 - 2024-04-23
 
 ### Added
