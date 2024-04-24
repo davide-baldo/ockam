@@ -4,6 +4,87 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.124.0 - 2024-04-24
+
+### Added
+
+- Pass the tracing context at the ockam message level
+- Add policies for resource types
+- Improve portals reliability and integration tests
+- Add an environment variable to configure a crates filter for log messages
+- Create time-limited journeys
+- Refactor `Project`-related code
+- Update enroll ux with new help text, display, and log progress status messages
+- Display initialization errors when running ockam
+- Start a new trace for a background node
+- Show ockam home on initialization issue
+- Update ux strings in enroll, project, project ticket, project enroll commands
+- Tune the timeouts for checking if a node is ready
+- Add syntax highlighting for command's fenced code blocks
+- Change behavior of how the target route is handled in "tcp-inlet create"
+- Upgraded kafka library, with kafka 3.7.0 support
+- Propagating the errors from api clients to the command
+- Add the node name to spans
+- Update display, log output in frequently used commands
+- `node create` can be run given a configuration file
+- Authority project admin credentials
+- `identity create` can import an identity
+- Improve output for `enroll` command
+- Add `project-member` subcommand
+- Flag to enable/disable enrollers-as-admins on authority
+- Add bats coverage for `node create ./config.yaml` command
+- Remove member argument from `project ticket` command
+- Create 3 separate credential retriever types
+- Introduce `disable_trust_context_id` argument for authority
+- Add a attribute with the content of a node configuration file
+- Add a user journey event when an identity has been created or imported
+- Support `foreground` flag when creating a node with a config file
+- Added kafka-inlet command and relative config side
+- Support https for outlets
+- Add the possibility to pass a node configuration inline
+- Improve output of `node create` command
+- `node create` raises an error if a passed variable has no value
+- Scope some repositories to a given node name
+- When deleting a node, wait for node's process to finish
+- Added `aes-gcm` feature and changed how `aws-lc` is propagated
+- Updated dependencies
+
+### Changed
+
+- Enable tracing by default
+- Incorporate review comments
+- Extract the progress display as a separate struct
+- Rename methods and variables to insist on the exporting
+- Disable syntax highlighting in command help
+- Refactor the parsing and execution of run commands
+- Change help message shown in command errors output
+- Simplify `ProgressDisplay` to remove the mutex used to stop the message recv end
+- Organize bats tests in different suites
+- Move terminal code from command to api
+
+### Fixed
+
+- Return error in `enroll` command if orchestrator fails to enrol identity
+- Command upgrade check
+- Do not log messages by default on command parsing errors
+- Fix the flushing of traces
+- Fix the off logging configuration
+- Fail background node creation if passed identity does not exist
+- Fix the blocking processing of spans and log records
+- Only display the error once when an identity is not found for the enroll command
+- Set variables defined in `node create` before parsing the config file
+- Fix routing and flow control for local kafka outlets
+- Kms identity can be used in regular api nodes
+- Don't show logs on parse errors logging is not enabled
+- Make sure to flush all events before shutting down
+- Make sure that creating two nodes with the same configuration works ok
+- Foreground nodes write all logs to stdout
+
+### Removed
+
+- Remove `--resource` and `--resource-type` args from `policy show|list|delete`
+- Remove some unnecessary context stops
+
 ## 0.123.0 - 2024-04-24
 
 ### Added

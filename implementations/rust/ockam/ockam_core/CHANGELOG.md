@@ -4,6 +4,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.109.0 - 2024-04-24
+
+### Added
+
+- Pass the tracing context at the ockam message level
+- Add policies for resource types
+- Added manual tests to measure latency
+- Propagating the errors from api clients to the command
+- Start a new trace when receiving a transport message
+- Start a new trace before sending a transport message
+- Introduced several cpu consumption optimizations
+- Backcompatible encoding/decoding optimizations
+- Add one second cache for incoming and outgoing access control
+- Reply to v1 transport messages with v1 transport messages
+- Enable the tracing context on the rust side
+- Create 3 separate credential retriever types
+- Added metadata and terminal concepts
+- Switch to `aws-lc-rs` library for encryption/decryption
+- Updated dependencies
+
+### Changed
+
+- Enable tracing by default
+- Incorporate review comments
+- Move terminal code from command to api
+
+### Fixed
+
+- Put the tracing context field under a compilation flag
+- Fix the root trace for a journey
+- Decode a transport message even without a tracing_context field
+- Only emit v1 messages
+
 ## 0.108.0 - 2024-04-24
 
 ### Added
