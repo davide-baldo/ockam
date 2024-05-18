@@ -17,6 +17,11 @@ defaults:
   run:
     shell: bash
 
+env:
+  BUCKET_NAME: github-release-1
+  AWS_REGION: us-east-1
+  AWS_ROLE: arn:aws:iam::422184013103:role/github_release
+
 jobs:
   create_release:
     permissions:
@@ -28,10 +33,6 @@ jobs:
     outputs:
       upload_url: ${{ steps.release_upload_url.outputs.upload_url }}
       version: ${{ steps.release_version.outputs.version }}
-    env:
-      BUCKET_NAME: ${{ vars.AWS_BUCKET_NAME }}
-      AWS_REGION: ${{ vars.AWS_REGION }}
-      AWS_ROLE: ${{ vars.AWS_ROLE }}
 
     steps:
       - name: Checkout Ockam
@@ -182,9 +183,6 @@ jobs:
       CODE_SIGN_IDENTITY: ${{ vars.CODE_SIGN_IDENTITY }}
       NOTARIZATION_EMAIL: ${{ vars.NOTARIZATION_EMAIL }}
       NOTARIZATION_PASSWORD: ${{ secrets.NOTARIZATION_PASSWORD }}
-      BUCKET_NAME: ${{ vars.AWS_BUCKET_NAME }}
-      AWS_REGION: ${{ vars.AWS_REGION }}
-      AWS_ROLE: ${{ vars.AWS_ROLE }}
 
     permissions:
       contents: write
@@ -412,11 +410,6 @@ jobs:
       contents: write
       id-token: write # This is required for requesting the JWT
 
-    env:
-      BUCKET_NAME: ${{ vars.AWS_BUCKET_NAME }}
-      AWS_REGION: ${{ vars.AWS_REGION }}
-      AWS_ROLE: ${{ vars.AWS_ROLE }}
-
     strategy:
       fail-fast: false
       matrix:
@@ -545,10 +538,6 @@ jobs:
     permissions:
       contents: write
       id-token: write # This is required for requesting the JWT
-    env:
-      BUCKET_NAME: ${{ vars.AWS_BUCKET_NAME }}
-      AWS_REGION: ${{ vars.AWS_REGION }}
-      AWS_ROLE: ${{ vars.AWS_ROLE }}
 
     steps:
       - name: Checkout repository
